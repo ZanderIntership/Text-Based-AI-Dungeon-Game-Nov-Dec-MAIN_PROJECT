@@ -4,7 +4,6 @@ from datetime import datetime
 
 app = Flask(__name__)
 
-# In-memory store for demo purposes. In production, use a database.
 TRANSACTIONS = []
 ASSETS = []
 
@@ -44,7 +43,6 @@ def index():
 @app.route('/track', methods=['GET', 'POST'])
 def track_spend():
     if request.method == 'POST':
-        # Basic form parsing + validation
         date = request.form.get('date') or datetime.utcnow().strftime('%Y-%m-%d')
         description = request.form.get('description', '').strip() or 'No description'
         try:
@@ -63,7 +61,7 @@ def track_spend():
         })
         return redirect(url_for('track_spend'))
 
-    # GET: show form and recent entries
+    
     recent = list(reversed(TRANSACTIONS))[:10]
     return render_template('track_spend.html', transactions=recent)
 
@@ -82,7 +80,6 @@ def networth():
         ASSETS.append({'name': name, 'price': float(price), 'account': account})
         return redirect(url_for('networth'))
 
-    # Prepare data for chart
     labels = [a['name'] for a in ASSETS]
     values = [a['price'] for a in ASSETS]
     total = sum(values) if values else 0
